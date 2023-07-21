@@ -1,4 +1,4 @@
-package com.mycompany.app;
+package com.bankasaurus.app;
 
 import org.junit.Test;
 
