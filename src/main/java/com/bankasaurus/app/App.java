@@ -9,15 +9,17 @@ public class App {
         int selection;
         Scanner sc = new Scanner(System.in);
         AccountRepository repo = new AccountRepository();
+        repo.AddAccount("Savings Account", new BigDecimal("2500.00"));
+        repo.AddAccount("Checking Account", new BigDecimal("10501.00"));
         Bank bank = new Bank(repo);
 
         DisplayLogo();
-        outer:
         while (true) {
             DisplayMenu();
             selection = CaptureIntSelection(sc);
             switch (selection) {
                 case 1:
+                    // open account
                     PromptUser("Please enter name for account and press enter:");
                     var accountName = sc.nextLine();
                     System.out.print("How much would you like to deposit?\n\n$");
@@ -26,14 +28,24 @@ public class App {
                     System.out.print(openStatus.Message);
                     break;
                 case 2:
+                    // check balance
+                    if(bank.RetrieveAccounts().isEmpty()) {
+                        System.out.print("No accounts on file!\n\n");
+                        break;
+                    }
                     DisplayAccountList(bank.RetrieveAccounts());
-                    PromptUser("Please Select Account to show balance:");
+                    PromptUser("Please Select Account to show balance, enter id");
                     var selectedAccountIdBalance = CaptureIntSelection(sc);
                     DisplayBalance(bank.RetrieveAccount(selectedAccountIdBalance));
                     break;
                 case 3:
+                    // deposit
+                    if(bank.RetrieveAccounts().isEmpty()) {
+                        System.out.print("No accounts on file!\n\n");
+                        break;
+                    }
                     DisplayAccountList(bank.RetrieveAccounts());
-                    PromptUser("Please Select Account to make a deposit:");
+                    PromptUser("What account would you like to deposit money into?");
                     var selectedAccountIdDeposit = CaptureIntSelection(sc);
                     System.out.print("How much would you like to deposit?\n\n$");
                     BigDecimal deposit = sc.nextBigDecimal();
@@ -41,14 +53,28 @@ public class App {
                     System.out.print(transactionStatus.Message);
                     break;
                 case 4:
-                    System.out.print("Choose account to transfer from:\n\n");
-                    // TODO list accounts
-                    System.out.print("Choose account to transfer to:\n\n");
-                    // TODO list accounts all but one
-                    System.out.print("How much would you like to transfer?\n\n");
-                    // TODO deposit money in account
-                    System.out.print("Transfer Successful!\n\n1");
-                    // TODO print deposit
+                    // transfer money
+                    if(bank.RetrieveAccounts().isEmpty()) {
+                        System.out.print("No accounts on file! 2" +
+                                "Two accounts required to transfer funds.\n\n");
+                        break;
+                    }
+
+                    if(bank.RetrieveAccounts().size() < 2) {
+                        System.out.print("Only one account on file! Two accounts required to transfer funds.\n\n");
+                        break;
+                    }
+
+                    DisplayAccountList(bank.RetrieveAccounts());
+                    System.out.print("What account would you like to transfer from?\n\n");
+                    var fromAccount = CaptureIntSelection(sc);
+                    System.out.print("How much would you like to transfer?\n\n$");
+                    var transferAmount = sc.nextBigDecimal();
+                    System.out.print("What account would you like to transfer to?\n\n");
+                    DisplayAccountList(bank.RetrieveAccounts());
+                    var toAccount = CaptureIntSelection(sc);
+                    var transferStatus = bank.TransferFunds(fromAccount, toAccount, transferAmount);
+                    System.out.print(transferStatus.Message);
                     break;
                 case 5:
                     System.out.println("\nThank you for choosing Bankasaurus.");
@@ -85,8 +111,7 @@ public class App {
         System.out.println("2. Check Balance");
         System.out.println("3. Deposit Money");
         System.out.println("4. Transfer Money");
-        System.out.println("5. Pay Bills");
-        System.out.println("6. Exit");
+        System.out.println("5. Exit");
         System.out.print("\nEnter your choice : ");
     }
 

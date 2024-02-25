@@ -47,6 +47,8 @@ public class Bank {
             return response;
         }
 
+        // todo return error if more than 2 decimal places
+
         var account = this.RetrieveAccount(accountId);
         if(account.isEmpty()) {
             response.Status = Status.Failure;
@@ -60,19 +62,38 @@ public class Bank {
         return response;
     }
 
+    public TransactionStatus TransferFunds(Integer fromAccountId, Integer toAccountId, BigDecimal transferAmount) {
+        var response = new TransactionStatus();
 
-    public void TransferFunds(Integer fromAccountId, Integer toAccountId, BigDecimal transferAmount) {
-        if(fromAccountId == toAccountId) {
+        // todo account null error
 
+        if(fromAccountId.equals(toAccountId)) {
+            response.Status = Status.Failure;
+            response.Message = "Error: Source account and destination account cannot be the same!\n\n";
+            return response;
         }
+
+        // todo return error if more than 2 decimal places
+
         var from = RetrieveAccount(fromAccountId);
         var to = RetrieveAccount(toAccountId);
 
-        if(from.isPresent() && to.isPresent()) {
-            from.get().Withdrawal(transferAmount);
-            to.get().Deposit(transferAmount);
-        } else {
-            // TODO error message
+        if(from.isEmpty() || to.isEmpty()){
+            response.Status = Status.Failure;
+            response.Message = "Error retrieving accounts!\n\n";
+            return response;
         }
+
+        if(from.get().GetBalance().compareTo(transferAmount) < 0) {
+            response.Status = Status.Failure;
+            response.Message = "Error: Source account and destination account cannot be the same!\n\n";
+            return response;
+        }
+
+        from.get().Withdrawal(transferAmount);
+        to.get().Deposit(transferAmount);
+        response.Status = Status.Success;
+        response.Message = "Transfer Successful!\n\n";
+        return response;
     }
 }
