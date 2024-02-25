@@ -47,12 +47,10 @@ public class Bank {
             return response;
         }
 
-        // todo return error if more than 2 decimal places
-
         var account = this.RetrieveAccount(accountId);
         if(account.isEmpty()) {
             response.Status = Status.Failure;
-            response.Message = "Could not find account!\n\n";
+            response.Message = "Account not found!\n\n";
             return response;
         }
 
@@ -65,7 +63,17 @@ public class Bank {
     public TransactionStatus TransferFunds(Integer fromAccountId, Integer toAccountId, BigDecimal transferAmount) {
         var response = new TransactionStatus();
 
-        // todo account null error
+        if(repository.GetAccount(fromAccountId).isEmpty()) {
+            response.Status = Status.Failure;
+            response.Message = "Error: Source account not found!\n\n";
+            return response;
+        }
+
+        if(repository.GetAccount(toAccountId).isEmpty()) {
+            response.Status = Status.Failure;
+            response.Message = "Error: Target account not found!\n\n";
+            return response;
+        }
 
         if(fromAccountId.equals(toAccountId)) {
             response.Status = Status.Failure;
@@ -73,20 +81,12 @@ public class Bank {
             return response;
         }
 
-        // todo return error if more than 2 decimal places
-
         var from = RetrieveAccount(fromAccountId);
         var to = RetrieveAccount(toAccountId);
 
-        if(from.isEmpty() || to.isEmpty()){
-            response.Status = Status.Failure;
-            response.Message = "Error retrieving accounts!\n\n";
-            return response;
-        }
-
         if(from.get().GetBalance().compareTo(transferAmount) < 0) {
             response.Status = Status.Failure;
-            response.Message = "Error: Source account and destination account cannot be the same!\n\n";
+            response.Message = "Error: Source account has insufficient funds!\n\n";
             return response;
         }
 

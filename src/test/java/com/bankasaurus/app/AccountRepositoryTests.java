@@ -16,13 +16,7 @@ public class AccountRepositoryTests {
     private final BigDecimal account3Balance = new BigDecimal("30.00");
     private final String account4Name = "Account 4";
     private final BigDecimal account4Balance = new BigDecimal("40.00");
-    private AccountRepository repository;
 
-    // get account returns optional if account list empty
-
-    // get account returns optional if account list not in list
-
-    // account is in list match is returned
     public AccountRepository SetupRepo(){
         var repo = new AccountRepository();
         repo.AddAccount(account1Name, account1Balance);
@@ -34,12 +28,15 @@ public class AccountRepositoryTests {
 
     @Test
     public void AccountFound() {
+        // Given
         var repo = SetupRepo();
         var accounts = repo.GetAccounts();
         var lastAccount = accounts.get(accounts.size() -1);
 
+        // When
         var fetchedAccount = repo.GetAccount(lastAccount.GetId());
 
+        // Then
         assertTrue(fetchedAccount.isPresent());
         assertEquals(lastAccount.GetId(), fetchedAccount.get().GetId());
         assertEquals(lastAccount.GetAccountName(), fetchedAccount.get().GetAccountName());
