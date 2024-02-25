@@ -68,11 +68,10 @@ public class App {
                     DisplayAccountList(bank.RetrieveAccounts());
                     System.out.print("What account would you like to transfer from?\n\n");
                     var fromAccount = CaptureIntSelection(sc);
+                    System.out.print("What account would you like to transfer to?\n\n");
+                    var toAccount = CaptureIntSelection(sc);
                     System.out.print("How much would you like to transfer?\n\n$");
                     var transferAmount = sc.nextBigDecimal();
-                    System.out.print("What account would you like to transfer to?\n\n");
-                    DisplayAccountList(bank.RetrieveAccounts());
-                    var toAccount = CaptureIntSelection(sc);
                     var transferStatus = bank.TransferFunds(fromAccount, toAccount, transferAmount);
                     System.out.print(transferStatus.Message);
                     break;
