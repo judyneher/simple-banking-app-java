@@ -16,7 +16,6 @@ public class BankTests {
     private final String account4Name = "Account 4";
     private final BigDecimal account4Balance = new BigDecimal("40.00");
 
-    // TODO:
     public AccountRepository SetupRepo() {
         var repo = new AccountRepository();
         repo.AddAccount(account1Name, account1Balance);

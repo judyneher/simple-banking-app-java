@@ -7,12 +7,6 @@ public class Account {
     private String accountName;
     private Integer id;
 
-    public Account(BigDecimal balance, String accountName, Integer accountNumber) {
-        this.balance = balance;
-        this.accountName = accountName;
-        this.id = accountNumber;
-    }
-
     public Account() {}
 
     public BigDecimal Deposit(BigDecimal deposit) {

@@ -5,7 +5,7 @@ import java.util.*;
 
 public class App {
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         int selection;
         Scanner sc = new Scanner(System.in);
         AccountRepository repo = new AccountRepository();
