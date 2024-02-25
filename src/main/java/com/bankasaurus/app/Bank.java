@@ -11,7 +11,7 @@ public class Bank {
         repository = accountRepository;
     }
 
-    public List<Account> GetAccounts() {
+    public List<Account> RetrieveAccounts() {
         return repository.GetAccounts();
     }
 
@@ -19,43 +19,52 @@ public class Bank {
         return repository.GetAccount(accountId);
     }
 
-    public void OpenAccount() {
-        var accounts = GetAccounts();
-        var newAccount = new Account();
-        accounts.add(newAccount);
-        repository.WriteAccounts(accounts);
-    }
-
-    public void CloseAccount(Account account) {
-        var accounts = GetAccounts();
-        if(accounts.contains(account)) {
-            accounts.remove(account);
-            repository.WriteAccounts(accounts);
-        } else {
-            //TODO  error message
+    public TransactionStatus OpenAccount(String accountName, BigDecimal initialDeposit) {
+        var response = new TransactionStatus();
+        if(initialDeposit.compareTo(BigDecimal.ZERO) < 0){
+            response.Status = Status.Failure;
+            response.Message = "Deposit must be greater than zero!\n\n";
+            return response;
         }
+
+        if(accountName.isEmpty() || accountName.isBlank()){
+            response.Status = Status.Failure;
+            response.Message = "Account Name cannot be empty\n\n";
+            return response;
+        }
+
+        repository.AddAccount(accountName, initialDeposit);
+        response.Status = Status.Success;
+        response.Message = "Account successfully opened!\n\n";
+        return response;
     }
 
-    public BigDecimal Deposit(Integer accountId, BigDecimal deposit) {
-        var accounts = GetAccounts();
+    public TransactionStatus Deposit(Integer accountId, BigDecimal deposit) {
+        var response = new TransactionStatus();
         if(deposit.compareTo(BigDecimal.ZERO) < 0){
-            System.out.print("Deposit must be greater than zero!\n\n");
-            return null;
+            response.Status = Status.Failure;
+            response.Message = "Deposit must be greater than zero!\n\n";
+            return response;
         }
 
         var account = this.RetrieveAccount(accountId);
         if(account.isEmpty()) {
-            System.out.print("Could not find account!\n\n");
-            return null;
+            response.Status = Status.Failure;
+            response.Message = "Could not find account!\n\n";
+            return response;
         }
 
         var endingBalance = account.get().Deposit(deposit);
-        repository.WriteAccount(account.get());
-        return endingBalance;
+        response.Status = Status.Success;
+        response.Message = "Deposit successful, balance: $" + endingBalance + "\n\n";
+        return response;
     }
 
 
     public void TransferFunds(Integer fromAccountId, Integer toAccountId, BigDecimal transferAmount) {
+        if(fromAccountId == toAccountId) {
+
+        }
         var from = RetrieveAccount(fromAccountId);
         var to = RetrieveAccount(toAccountId);
 

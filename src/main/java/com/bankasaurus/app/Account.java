@@ -1,13 +1,8 @@
 package com.bankasaurus.app;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import java.math.BigDecimal;
 
 public class Account {
-    @JsonSerialize(using = CurrencySerializer.class)
-    @JsonProperty("balance")
     private BigDecimal balance;
     private String accountName;
     private Integer id;
@@ -18,9 +13,7 @@ public class Account {
         this.id = accountNumber;
     }
 
-    public Account() {
-
-    }
+    public Account() {}
 
     public BigDecimal Deposit(BigDecimal deposit) {
         balance = balance.add(deposit);
@@ -40,19 +33,19 @@ public class Account {
         return balance;
     }
 
-    public Integer getId() {
+    public Integer GetId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void SetId(Integer id) {
         this.id = id;
     }
 
-    public String getAccountName() {
+    public String GetAccountName() {
         return accountName;
     }
 
-    public void setAccountName(String accountName) {
+    public void SetAccountName(String accountName) {
         this.accountName = accountName;
     }
 }
